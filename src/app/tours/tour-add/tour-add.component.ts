@@ -5,6 +5,7 @@ import { Subscription } from 'rxjs/Subscription';
 import { MasterDataService } from '../../shared/master-data.service';
 import { TourService } from '../shared/tour.service';
 import { Router } from '@angular/router';
+import { Manager } from '../../shared/manager.model';
 
 @Component({
   selector: 'app-tour-add',
@@ -12,20 +13,23 @@ import { Router } from '@angular/router';
   styleUrls: ['./tour-add.component.css']
 })
 export class TourAddComponent implements OnInit {
-
   public tourForm: FormGroup;
   bands: Band[];
+  managers: Manager[];
+  private isAdmin = true;
 
-  constructor(private masterDataService: MasterDataService,
+  constructor(
+    private masterDataService: MasterDataService,
     private tourService: TourService,
     private formBuilder: FormBuilder,
-    private router: Router) { }
+    private router: Router
+  ) {}
 
   ngOnInit() {
-
     // define the tourForm (with empty default values)
     this.tourForm = this.formBuilder.group({
       band: [''],
+      manager: [''],
       title: [''],
       description: [''],
       startDate: [],
@@ -33,16 +37,39 @@ export class TourAddComponent implements OnInit {
     });
 
     // get bands from master data service
-    this.masterDataService.getBands()
-      .subscribe(bands => {
-        this.bands = bands;
-      });    
+    this.masterDataService.getBands().subscribe(bands => {
+      this.bands = bands;
+    });
+
+    if (this.isAdmin === true) {
+      // get managers from master data service
+      this.masterDataService.getManagers().subscribe(managers => {
+        this.managers = managers;
+      });
+    }
   }
 
   addTour(): void {
     if (this.tourForm.dirty) {
-        // TODO
+      if (this.isAdmin === true) {
+        const tour = automapper.map(
+          'TourFormModel',
+          'TourWithManagerForCreation',
+          this.tourForm.value
+        );
+        this.tourService.addTourWithManager(tour).subscribe(() => {
+          this.router.navigateByUrl('/tours');
+        });
+      } else {
+        const tour = automapper.map(
+          'TourFormModel',
+          'TourForCreation',
+          this.tourForm.value
+        );
+        this.tourService.addTour(tour).subscribe(() => {
+          this.router.navigateByUrl('/tours');
+        });
+      }
     }
   }
-
 }

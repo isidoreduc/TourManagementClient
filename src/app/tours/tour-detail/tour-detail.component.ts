@@ -16,7 +16,7 @@ export class TourDetailComponent implements OnInit, OnDestroy {
   private tour: any;
   private tourId: string;
   private sub: Subscription;
-  private isAdmin = true;
+  private isAdmin = false;
 
   constructor(
     private masterDataService: MasterDataService,
@@ -24,22 +24,43 @@ export class TourDetailComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute
   ) {}
 
+  // ngOnInit() {
+  //   // get route data (tourId)
+  //   this.sub = this.route.params.subscribe(params => {
+  //     this.tourId = params['tourId'];
+  //     // if admin
+  //     if (this.isAdmin === true) {
+  //       this.tourService // get also estimated profits data from server
+  //         .getTourWithEstimatedProfits(this.tourId)
+  //         .subscribe(tour => {
+  //           this.tour = tour;
+  //         });
+  //     } else { // if not
+  //       this.tourService // this data is not retrieved from server
+  //         .getTour(this.tourId)
+  //         .subscribe(tour => {
+  //           this.tour = tour;
+  //       });
+  //     }
+  //   });
+  // }
+
   ngOnInit() {
     // get route data (tourId)
     this.sub = this.route.params.subscribe(params => {
       this.tourId = params['tourId'];
-      // if admin
+
       if (this.isAdmin === true) {
-        this.tourService // get also estimated profits data from server
+        // get tour with estimated profits field
+        this.tourService
           .getTourWithEstimatedProfits(this.tourId)
           .subscribe(tour => {
             this.tour = tour;
           });
-      } else { // if not
-        this.tourService // this data is not retrieved from server
-          .getTour(this.tourId)
-          .subscribe(tour => {
-            this.tour = tour;
+      } else {
+        // get tour
+        this.tourService.getTour(this.tourId).subscribe(tour => {
+          this.tour = tour;
         });
       }
     });

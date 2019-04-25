@@ -2,7 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule, ErrorHandler } from '@angular/core';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { DatePipe } from '@angular/common'
+import { DatePipe } from '@angular/common';
 import { HttpClient } from '@angular/common/http/src/client';
 
 // import routing module
@@ -10,12 +10,14 @@ import { AppRoutingModule } from './app.routing';
 import { AppComponent } from './app.component';
 import { AboutComponent } from './about';
 import {
-  ToursComponent, TourAddComponent, TourDetailComponent,
+  ToursComponent,
+  TourAddComponent,
+  TourDetailComponent,
   TourUpdateComponent
 } from './tours';
 import { ShowsComponent, ShowAddComponent } from './tours/shows';
-import { TourService } from './tours/shared/tour.service'
-import { ShowService } from './tours/shows/shared/show.service'
+import { TourService } from './tours/shared/tour.service';
+import { ShowService } from './tours/shows/shared/show.service';
 import { MasterDataService } from './shared/master-data.service';
 import { GlobalErrorHandler } from './shared/global-error-handler';
 import { ErrorLoggerService } from './shared/error-logger.service';
@@ -40,25 +42,67 @@ import { WriteOutJsonInterceptor } from './shared/write-out-json-interceptor';
     FormsModule,
     ReactiveFormsModule
   ],
-  providers: [   
+  providers: [
     {
       provide: HTTP_INTERCEPTORS,
       useClass: WriteOutJsonInterceptor,
       multi: true
-    },    
+    },
     {
       provide: HTTP_INTERCEPTORS,
       useClass: HandleHttpErrorInterceptor,
-      multi: true,
+      multi: true
     },
-    GlobalErrorHandler, ErrorLoggerService, TourService, MasterDataService, ShowService, DatePipe],
+    GlobalErrorHandler,
+    ErrorLoggerService,
+    TourService,
+    MasterDataService,
+    ShowService,
+    DatePipe
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule {
-
   constructor() {
-
     // automapper mappings
 
+    automapper
+      .createMap('TourFormModel', 'TourForCreation')
+      .forSourceMember(
+        'band',
+        (opts: AutoMapperJs.ISourceMemberConfigurationOptions) => {
+          opts.ignore();
+        }
+      )
+      .forSourceMember(
+        'manager',
+        (opts: AutoMapperJs.ISourceMemberConfigurationOptions) => {
+          opts.ignore();
+        }
+      )
+      .forMember('bandid', opts => {
+        opts.mapFrom('band');
+      });
+
+    automapper
+      .createMap('TourFormModel', 'TourWithManagerForCreation')
+      .forSourceMember(
+        'band',
+        (opts: AutoMapperJs.ISourceMemberConfigurationOptions) => {
+          opts.ignore();
+        }
+      )
+      .forSourceMember(
+        'manager',
+        (opts: AutoMapperJs.ISourceMemberConfigurationOptions) => {
+          opts.ignore();
+        }
+      )
+      .forMember('bandid', opts => {
+        opts.mapFrom('band');
+      })
+      .forMember('managerid', opts => {
+        opts.mapFrom('manager');
+      });
   }
 }
