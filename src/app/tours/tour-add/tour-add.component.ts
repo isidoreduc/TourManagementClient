@@ -16,7 +16,7 @@ export class TourAddComponent implements OnInit {
   public tourForm: FormGroup;
   bands: Band[];
   managers: Manager[];
-  private isAdmin = true;
+  private isAdmin = false;
 
   constructor(
     private masterDataService: MasterDataService,
