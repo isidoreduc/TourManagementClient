@@ -13,28 +13,36 @@ import { Show } from '../shows/shared/show.model';
   styleUrls: ['./tour-detail.component.css']
 })
 export class TourDetailComponent implements OnInit, OnDestroy {
-
   private tour: any;
   private tourId: string;
   private sub: Subscription;
+  private isAdmin = true;
 
-  constructor(private masterDataService: MasterDataService,
+  constructor(
+    private masterDataService: MasterDataService,
     private tourService: TourService,
-    private route: ActivatedRoute) {
-  }
+    private route: ActivatedRoute
+  ) {}
 
   ngOnInit() {
     // get route data (tourId)
-    this.sub = this.route.params.subscribe(
-      params => {
-        this.tourId = params['tourId'];
-
-        this.tourService.getTour(this.tourId)
-        .subscribe(tour => {
-          this.tour = tour;  
+    this.sub = this.route.params.subscribe(params => {
+      this.tourId = params['tourId'];
+      // if admin
+      if (this.isAdmin === true) {
+        this.tourService // get also estimated profits data from server
+          .getTourWithEstimatedProfits(this.tourId)
+          .subscribe(tour => {
+            this.tour = tour;
+          });
+      } else { // if not
+        this.tourService // this data is not retrieved from server
+          .getTour(this.tourId)
+          .subscribe(tour => {
+            this.tour = tour;
         });
       }
-    );
+    });
   }
 
   ngOnDestroy(): void {

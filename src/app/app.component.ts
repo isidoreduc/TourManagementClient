@@ -7,5 +7,5 @@ import {  } from "automapper-ts";
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'Pluralsight Demo';  
+  title = 'Demo';  
 }
