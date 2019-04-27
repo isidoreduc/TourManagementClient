@@ -9,12 +9,7 @@ import { HttpClient } from '@angular/common/http/src/client';
 import { AppRoutingModule } from './app.routing';
 import { AppComponent } from './app.component';
 import { AboutComponent } from './about';
-import {
-  ToursComponent,
-  TourAddComponent,
-  TourDetailComponent,
-  TourUpdateComponent
-} from './tours';
+import { ToursComponent, TourAddComponent, TourDetailComponent, TourUpdateComponent } from './tours';
 import { ShowsComponent, ShowAddComponent } from './tours/shows';
 import { TourService } from './tours/shared/tour.service';
 import { ShowService } from './tours/shows/shared/show.service';
@@ -24,6 +19,7 @@ import { ErrorLoggerService } from './shared/error-logger.service';
 import { HandleHttpErrorInterceptor } from './shared/handle-http-error-interceptor';
 import { WriteOutJsonInterceptor } from './shared/write-out-json-interceptor';
 import { EnsureAcceptHeaderInterceptor } from './shared/ensure-accept-header-interceptor';
+import { ShowSingleComponent } from './tours/shows/show-single/show-single.component';
 
 @NgModule({
   declarations: [
@@ -34,15 +30,10 @@ import { EnsureAcceptHeaderInterceptor } from './shared/ensure-accept-header-int
     TourAddComponent,
     ToursComponent,
     TourUpdateComponent,
-    ShowAddComponent
+    ShowAddComponent,
+    ShowSingleComponent
   ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    HttpClientModule,
-    FormsModule,
-    ReactiveFormsModule
-  ],
+  imports: [BrowserModule, AppRoutingModule, HttpClientModule, FormsModule, ReactiveFormsModule],
   providers: [
     {
       provide: HTTP_INTERCEPTORS,
@@ -74,41 +65,60 @@ export class AppModule {
 
     automapper
       .createMap('TourFormModel', 'TourForCreation')
-      .forSourceMember(
-        'band',
-        (opts: AutoMapperJs.ISourceMemberConfigurationOptions) => {
-          opts.ignore();
-        }
-      )
-      .forSourceMember(
-        'manager',
-        (opts: AutoMapperJs.ISourceMemberConfigurationOptions) => {
-          opts.ignore();
-        }
-      )
-      .forMember('bandid', opts => {
+      .forSourceMember('band', (opts: AutoMapperJs.ISourceMemberConfigurationOptions) => {
+        opts.ignore();
+      })
+      .forSourceMember('manager', (opts: AutoMapperJs.ISourceMemberConfigurationOptions) => {
+        opts.ignore();
+      })
+      .forMember('bandid', function(opts) {
         opts.mapFrom('band');
       });
 
     automapper
       .createMap('TourFormModel', 'TourWithManagerForCreation')
-      .forSourceMember(
-        'band',
-        (opts: AutoMapperJs.ISourceMemberConfigurationOptions) => {
-          opts.ignore();
-        }
-      )
-      .forSourceMember(
-        'manager',
-        (opts: AutoMapperJs.ISourceMemberConfigurationOptions) => {
-          opts.ignore();
-        }
-      )
-      .forMember('bandid', opts => {
+      .forSourceMember('band', (opts: AutoMapperJs.ISourceMemberConfigurationOptions) => {
+        opts.ignore();
+      })
+      .forSourceMember('manager', (opts: AutoMapperJs.ISourceMemberConfigurationOptions) => {
+        opts.ignore();
+      })
+      .forMember('bandid', function(opts) {
         opts.mapFrom('band');
       })
-      .forMember('managerid', opts => {
+      .forMember('managerid', function(opts) {
         opts.mapFrom('manager');
       });
+
+    automapper
+      .createMap('TourFormModel', 'TourWithShowsForCreation')
+      .forSourceMember('band', (opts: AutoMapperJs.ISourceMemberConfigurationOptions) => {
+        opts.ignore();
+      })
+      .forSourceMember('manager', (opts: AutoMapperJs.ISourceMemberConfigurationOptions) => {
+        opts.ignore();
+      })
+      .forMember('bandid', function(opts) {
+        opts.mapFrom('band');
+      });
+
+    automapper
+      .createMap('TourFormModel', 'TourWithManagerAndShowsForCreation')
+      .forSourceMember('band', (opts: AutoMapperJs.ISourceMemberConfigurationOptions) => {
+        opts.ignore();
+      })
+      .forSourceMember('manager', (opts: AutoMapperJs.ISourceMemberConfigurationOptions) => {
+        opts.ignore();
+      })
+      .forMember('bandid', function(opts) {
+        opts.mapFrom('band');
+      })
+      .forMember('managerid', function(opts) {
+        opts.mapFrom('manager');
+      });
+
+    automapper.createMap('ShowCollectionFormModelShowsArray', 'ShowCollectionForCreation');
+
+    automapper.createMap('TourFormModel', 'TourForUpdate');
   }
 }
