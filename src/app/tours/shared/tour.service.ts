@@ -12,6 +12,8 @@ import { TourForCreation } from './tour-for-creation.model';
 import { TourWithManagerForCreation } from './tour-with-manager-for-creation.model';
 import { TourWithShows } from './tour-with-shows.model';
 import { TourWithEstimatedProfitsAndShows } from './tour-with-estimated-profits-and-shows.model';
+import { TourWithShowsForCreation } from './tour-with-shows-for-creation.model';
+import { TourWithManagerAndShowsForCreation } from './tour-with-manager-and-shows-for-creation.model';
 
 @Injectable()
 export class TourService extends BaseService {
@@ -28,17 +30,12 @@ export class TourService extends BaseService {
     return this.http.get<Tour>(`${this.apiUrl}/tours/${tourId}`);
   }
 
-  getTourWithEstimatedProfits(
-    tourId: string
-  ): Observable<TourWithEstimatedProfits> {
-    return this.http.get<TourWithEstimatedProfits>(
-      `${this.apiUrl}/tours/${tourId}`,
-      {
-        headers: {
-          Accept: 'application/vnd.isidore.tourwithestimatedprofits+json'
-        }
+  getTourWithEstimatedProfits(tourId: string): Observable<TourWithEstimatedProfits> {
+    return this.http.get<TourWithEstimatedProfits>(`${this.apiUrl}/tours/${tourId}`, {
+      headers: {
+        Accept: 'application/vnd.isidore.tourwithestimatedprofits+json'
       }
-    );
+    });
   }
 
   getTourWithShows(tourId: string): Observable<TourWithShows> {
@@ -49,21 +46,23 @@ export class TourService extends BaseService {
     });
   }
 
-  getTourWithEstimatedProfitsAndShows(
-    tourId: string
-  ): Observable<TourWithEstimatedProfitsAndShows> {
-    return this.http.get<TourWithEstimatedProfitsAndShows>(
-      `${this.apiUrl}/tours/${tourId}`,
-      {
-        headers: {
-          Accept:
-            'application/vnd.isidore.tourwithestimatedprofitsandshows+json'
-        }
+  getTourWithEstimatedProfitsAndShows(tourId: string): Observable<TourWithEstimatedProfitsAndShows> {
+    return this.http.get<TourWithEstimatedProfitsAndShows>(`${this.apiUrl}/tours/${tourId}`, {
+      headers: {
+        Accept: 'application/vnd.isidore.tourwithestimatedprofitsandshows+json'
       }
-    );
+    });
   }
   //#endregion HttpGet
   //#region HttpPost
+  addTourDefault(tourToAdd: TourForCreation): Observable<Tour> {
+    return this.http.post<Tour>(`${this.apiUrl}/tours`, tourToAdd, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+  }
+
   addTour(tourToAdd: TourForCreation): Observable<Tour> {
     return this.http.post<Tour>(`${this.apiUrl}/tours`, tourToAdd, {
       headers: {
@@ -75,8 +74,23 @@ export class TourService extends BaseService {
   addTourWithManager(tourToAdd: TourWithManagerForCreation): Observable<Tour> {
     return this.http.post<Tour>(`${this.apiUrl}/tours`, tourToAdd, {
       headers: {
-        'Content-Type':
-          'application/vnd.isidore.tourwithmanagerforcreation+json'
+        'Content-Type': 'application/vnd.isidore.tourwithmanagerforcreation+json'
+      }
+    });
+  }
+
+  addTourWithShows(tourToAdd: TourWithShowsForCreation): Observable<Tour> {
+    return this.http.post<Tour>(`${this.apiUrl}/tours`, tourToAdd, {
+      headers: {
+        'Content-Type': 'application/vnd.isidore.tourwithshowsforcreation+json'
+      }
+    });
+  }
+
+  addTourWithManagerAndShows(tourToAdd: TourWithManagerAndShowsForCreation): Observable<Tour> {
+    return this.http.post<Tour>(`${this.apiUrl}/tours`, tourToAdd, {
+      headers: {
+        'Content-Type': 'application/vnd.isidore.tourwithmanagerandshowsforcreation+json'
       }
     });
   }
