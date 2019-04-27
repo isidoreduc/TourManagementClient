@@ -16,7 +16,7 @@ export class TourDetailComponent implements OnInit, OnDestroy {
   private tour: any;
   private tourId: string;
   private sub: Subscription;
-  private isAdmin = false;
+  private isAdmin = true;
 
   constructor(
     private masterDataService: MasterDataService,
@@ -53,13 +53,13 @@ export class TourDetailComponent implements OnInit, OnDestroy {
       if (this.isAdmin === true) {
         // get tour with estimated profits field
         this.tourService
-          .getTourWithEstimatedProfits(this.tourId)
+          .getTourWithEstimatedProfitsAndShows(this.tourId)
           .subscribe(tour => {
             this.tour = tour;
           });
       } else {
         // get tour
-        this.tourService.getTour(this.tourId).subscribe(tour => {
+        this.tourService.getTourWithShows(this.tourId).subscribe(tour => {
           this.tour = tour;
         });
       }
