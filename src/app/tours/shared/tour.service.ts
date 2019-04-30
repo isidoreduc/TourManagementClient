@@ -14,6 +14,7 @@ import { TourWithShows } from './tour-with-shows.model';
 import { TourWithEstimatedProfitsAndShows } from './tour-with-estimated-profits-and-shows.model';
 import { TourWithShowsForCreation } from './tour-with-shows-for-creation.model';
 import { TourWithManagerAndShowsForCreation } from './tour-with-manager-and-shows-for-creation.model';
+import { Operation } from 'fast-json-patch';
 
 @Injectable()
 export class TourService extends BaseService {
@@ -95,4 +96,12 @@ export class TourService extends BaseService {
     });
   }
   //#endregion
+
+  //#region HttpPatch
+  partiallyUpdateTour(tourId: string, patchDocument: Operation[]): Observable<any> {
+    return this.http.patch(`${this.apiUrl}/tours/${tourId}`, patchDocument, {
+      headers: { 'Content-Type': 'application/json-patch+json' }
+    });
+  }
+  //#endregion HttpPatch
 }
