@@ -12,16 +12,13 @@
           <div class="col-md-8">
             <input class="form-control" id="titleId" type="text" placeholder="Title" formControlName="title" />
             <div *ngIf="tourForm.controls.title.dirty" class="has-error">
-              <div *ngIf="tourForm.controls.title.errors?.required">Title is required</div>
-              <div *ngIf="tourForm.controls.title.errors?.maxlength">Title is too long</div>
+              <div *ngIf="tourForm.controls.title.errors?.required">Title is required.</div>
+              <div *ngIf="tourForm.controls.title.errors?.maxlength">Title is too long.</div>
             </div>
           </div>
         </div>
 
-        <div
-          class="form-group"
-          [ngClass]="{ 'has-error': tourForm.controls.description.invalid && tourForm.controls.description.dirty }"
-        >
+        <div class="form-group" [ngClass]="{ 'has-error': tourForm.controls.description.invalid }">
           <label class="col-md-2 control-label" for="descriptionId">Description</label>
           <div class="col-md-8">
             <textarea
@@ -31,36 +28,52 @@
               rows="5"
               formControlName="description"
             ></textarea>
+            <div *ngIf="tourForm.controls.description.errors?.required">
+              When updating a tour, the description is required.
+            </div>
             <div *ngIf="tourForm.controls.description.dirty" class="has-error">
-              <div *ngIf="tourForm.controls.description.errors?.required">Description is required</div>
-              <div *ngIf="tourForm.controls.description.errors?.maxlength">Description is too long</div>
+              <div *ngIf="tourForm.controls.description.errors?.maxlength">Description is too long.</div>
             </div>
           </div>
         </div>
 
         <div
           class="form-group"
-          [ngClass]="{ 'has-error': tourForm.controls.startDate.invalid && tourForm.controls.startDate.dirty }"
+          [ngClass]="{
+            'has-error':
+              (tourForm.errors?.startDateBeforeEndDate || tourForm.controls.startDate.invalid) &&
+              (tourForm.controls.startDate.dirty || tourForm.controls.endDate.dirty)
+          }"
         >
           <label class="col-md-2 control-label" for="startDateId">Starts on</label>
           <div class="col-md-8">
             <input class="form-control" id="startDateId" type="date" formControlName="startDate" />
-          </div>
-          <div *ngIf="tourForm.controls.startDate.dirty" class="has-error">
-            <div *ngIf="tourForm.controls.startDate.errors?.required">Start date is required</div>
+            <div *ngIf="tourForm.controls.startDate.dirty || tourForm.controls.endDate.dirty" class="has-error">
+              <div *ngIf="tourForm.errors?.startDateBeforeEndDate">A tour must start before it can end.</div>
+            </div>
+            <div *ngIf="tourForm.controls.startDate.dirty" class="has-error">
+              <div *ngIf="tourForm.controls.startDate.errors?.required">The start date is required.</div>
+            </div>
           </div>
         </div>
 
         <div
           class="form-group"
-          [ngClass]="{ 'has-error': tourForm.controls.endDate.invalid && tourForm.controls.endDate.dirty }"
+          [ngClass]="{
+            'has-error':
+              (tourForm.errors?.startDateBeforeEndDate || tourForm.controls.endDate.invalid) &&
+              (tourForm.controls.startDate.dirty || tourForm.controls.endDate.dirty)
+          }"
         >
           <label class="col-md-2 control-label" for="endDateId">Ends on</label>
           <div class="col-md-8">
             <input class="form-control" id="endDateId" type="date" formControlName="endDate" />
-          </div>
-          <div *ngIf="tourForm.controls.endDate.dirty" class="has-error">
-            <div *ngIf="tourForm.controls.endDate.errors?.required">End date is required</div>
+            <div *ngIf="tourForm.controls.startDate.dirty || tourForm.controls.endDate.dirty" class="has-error">
+              <div *ngIf="tourForm.errors?.startDateBeforeEndDate">A tour must start before it can end.</div>
+            </div>
+            <div *ngIf="tourForm.controls.endDate.dirty" class="has-error">
+              <div *ngIf="tourForm.controls.endDate.errors?.required">The end date is required.</div>
+            </div>
           </div>
         </div>
 

@@ -9,7 +9,7 @@ import { DatePipe } from '@angular/common';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 import { TourForUpdate } from '../shared/tour-for-update.model';
 import { compare } from 'fast-json-patch';
-//import { CustomValidators } from '../../shared/custom-validators';
+import { CustomValidators } from '../shared/custom-validators';
 
 @Component({
   selector: 'app-tour-update',
@@ -40,7 +40,7 @@ export class TourUpdateComponent implements OnInit, OnDestroy {
         startDate: [, Validators.required],
         endDate: [, Validators.required]
       },
-      //{ validator: CustomValidators.StartDateBeforeEndDateValidator }
+      { validator: CustomValidators.StartDateBeforeEndDateValidator }
     );
 
     // get route data (tourId)
@@ -62,8 +62,8 @@ export class TourUpdateComponent implements OnInit, OnDestroy {
   }
 
   private updateTourForm(): void {
-    let datePipe = new DatePipe(navigator.language);
-    let dateFormat = 'yyyy-MM-dd';
+    const datePipe = new DatePipe(navigator.language);
+    const dateFormat = 'yyyy-MM-dd';
 
     this.tourForm.patchValue({
       title: this.tour.title,
@@ -81,9 +81,9 @@ export class TourUpdateComponent implements OnInit, OnDestroy {
       //   {op: "replace", path: "/title", value: "Updated title"}
       // ]
 
-      let changedTourForUpdate = automapper.map('TourFormModel', 'TourForUpdate', this.tourForm.value);
+      const changedTourForUpdate = automapper.map('TourFormModel', 'TourForUpdate', this.tourForm.value);
 
-      let patchDocument = compare(this.originalTourForUpdate, changedTourForUpdate);
+      const patchDocument = compare(this.originalTourForUpdate, changedTourForUpdate);
 
       this.tourService.partiallyUpdateTour(this.tourId, patchDocument).subscribe(() => {
         this.router.navigateByUrl('/tours');
